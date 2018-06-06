@@ -1,10 +1,11 @@
-from data_generator.generator_settings import GeneratorSettings
+from .generator_settings import GeneratorSettings
 from treelib import Tree, Node
 
 from .serializers import string_serializer
-from .generation_functions import *
 
 import logging
+import numpy as np
+import math
 
 
 class Generator(object):
@@ -161,3 +162,13 @@ class State(object):
 
         self.tree: Tree = Tree()
         self.tree.add_node(root_node)
+
+
+def number(len: int):
+    """
+    Generate number whose string representation is of length size. In other words, following stands:
+       len(str(num)) == size
+    """
+    return np.random.randint(
+        int(math.pow(10, len - 1)),
+        int(math.pow(10, len) - 1))
