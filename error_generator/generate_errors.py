@@ -28,8 +28,6 @@ class ErrorGenerator(object):
     def generate_errors(self, string: str, error_count: int) -> str:
         # generate a sample from all indexes of string with a count of error_count
         for index in random.sample(range(len(string)), error_count):
-            print("Chosen index", index)
-
             char = string[index]
 
             # choose an error based on probability
@@ -41,13 +39,17 @@ class ErrorGenerator(object):
         return string
 
     def generate_from_originals(self, originals: list, error_count_range: range, generated_count_range) -> dict:
+        generated_expressions = dict()
+
         for original in originals:
-            generated_strings = list()
+            generated_expressions[original] = list()
 
             for i in range(random.sample(generated_count_range, 1)):
                 error_count = random.sample(error_count_range, 1)
 
-                generated_strings.append(self.generate_errors(original, error_count))
+                generated_expressions[original].append(self.generate_errors(original, error_count))
+
+        return generated_expressions
 
     @staticmethod
     def __load_probabilities_map(filePath: str) -> dict:
