@@ -30,10 +30,12 @@ class Generator(object):
 
         while self.state.current_len < self.state.target_len:
 
-            # if we are at depth x and we can only fill x more spaces, we will fill them with closing brackets
-            if self.state.target_len - self.state.current_len == self.state.tree.depth(self.state.current_node):
-                self.generation_functions.get('close')()
-            elif self.state.target_len - self.state.current_len < self.min_function_length + 2:
+            spaces_left = self.state.target_len - self.state.current_len
+
+            # if we are at depth x and we can only fill x more spaces, we will exit, because there is no more space
+            if spaces_left == self.state.tree.depth(self.state.current_node):
+                return
+            elif spaces_left < self.min_function_length + 2:
                 # if we cannot fit a function, we won't
                 self.generation_functions.get('expression')()
             else:
