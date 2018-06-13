@@ -16,6 +16,8 @@ class Generator(object):
 
         self.__choose_generation_type()
 
+        self.__fix_length()
+
         logging.debug(string_serializer.debug_serialize(self.state.tree))
 
         logging.info("Result: {}".format(string_serializer.serialize(self.state.tree)))
@@ -129,6 +131,31 @@ class Generator(object):
             return
 
         self.state.current_node = self.state.tree.parent(current_node.identifier)
+
+    def __fix_length(self):
+        # delete or add additional data if needed
+
+        length_diff = self.state.current_len - self.state.target_len
+
+        if length_diff == 0:
+            return
+
+        while length_diff > 0:
+            # we need to delete some data
+            for node in self.state.tree.all_nodes_itr():
+                if node.tag == "expression" and len(node.data) > 1:
+                    data_len = len(node.data)
+                    node.data = node.data[0:1]
+                    length_diff -= data_len - 1
+                    break
+
+        while length_diff < 0:
+            # we need to add some data
+            for node in self.state.tree.all_nodes_itr():
+                if node.tag == "expression":
+                    node.data += str(number(-length_diff))
+                    length_diff = 0
+                    break
 
     def __choose_descent_function(self):
         return str(np.random.choice(a=self.generator_settings.functions))
